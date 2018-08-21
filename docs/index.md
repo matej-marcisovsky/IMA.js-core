@@ -1,7 +1,3 @@
----
-layout: default
----
-
 # IMA.js is a framework for creating isomorphic javascript applications
 
 ## Fully isomorphic
