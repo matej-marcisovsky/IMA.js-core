@@ -11,7 +11,7 @@ Page metadata are centrally managed, allowing easier management of all your keyw
 <ul>
 	{% for post in site.posts %}
 	<li>
-		<a href="{{ post.url }}">{{ post.title }}</a>
+		<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
 	</li>
 	{% endfor %}
 </ul>
