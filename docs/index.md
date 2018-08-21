@@ -15,3 +15,7 @@ Page metadata are centrally managed, allowing easier management of all your keyw
 	</li>
 	{% endfor %}
 </ul>
+
+```javascript
+window.alert('test');
+```
