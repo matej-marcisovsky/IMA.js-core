@@ -1,12 +1,15 @@
 const del = require('del');
 const gulp = require('gulp');
 const change = require('gulp-change');
-const jsdoc = require('gulp-jsdoc3');
+const jsdoc2md = require('jsdoc-to-markdown');
 const rename = require('gulp-rename');
+const fs = require('fs');
+const map = require('map-stream');
+
 const dir = {
   parent: `${__dirname}/../`,
   docSrc: `${__dirname}/../doc-src/`,
-  doc: `${__dirname}/../doc`
+  doc: `${__dirname}/../docs/_posts/`
 };
 const documentationPreprocessors = [
   {
@@ -57,21 +60,30 @@ function docPreprocess() {
 }
 
 function docGenerate(done) {
+  const filenamePrefix = new Date().toISOString().slice(0, 10);
+  fs.mkdirSync(dir.doc);
+
   gulp
-    .src([`${dir.parent}README.md`, `${dir.docSrc}**/*.{js,jsx}`], {
+    .src([`${dir.docSrc}**/*.{js,jsx}`], {
       read: false
     })
     .pipe(
-      jsdoc(
-        {
-          opts: {
-            destination: dir.doc
-          },
-          plugins: ['plugins/markdown']
-        },
-        done
-      )
-    );
+      map((file, callback) => {
+        const output = jsdoc2md.renderSync({
+          files: file.path,
+          separators: true
+        });
+        const filename = file.relative
+          .replace(/(\/|.jsx|.js)/g, '')
+          .replace(/([a-zA-Z])(?=[A-Z])/g, '$1-')
+          .toLowerCase();
+
+        fs.writeFileSync(`${dir.doc}${filenamePrefix}-${filename}.md`, output);
+
+        callback(null, file);
+      })
+    )
+    .on('end', () => done());
 }
 
 function docClean() {

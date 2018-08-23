@@ -1,0 +1,6 @@
+---
+---
+
+```javascript
+window.alert('test');
+```

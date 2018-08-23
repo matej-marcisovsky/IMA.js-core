@@ -1,3 +1,9 @@
+---
+---
+
+{::options parse_block_html="true" /}
+
+<div class="content">
 # IMA.js is a framework for creating isomorphic javascript applications
 
 ## Fully isomorphic
@@ -7,15 +13,4 @@ Write and run the same code at both the server side and the client side! IMA.js 
 ## SEO
 
 Page metadata are centrally managed, allowing easier management of all your keywords and og meta-tags.
-
-<ul>
-	{% for post in site.posts %}
-	<li>
-		<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-	</li>
-	{% endfor %}
-</ul>
-
-```javascript
-window.alert('test');
-```
+</div>

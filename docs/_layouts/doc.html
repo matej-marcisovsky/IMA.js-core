@@ -1,0 +1,19 @@
+{% include header.html %}
+<div id="doc" class="is-flex">
+	<div>
+		<input class="input" type="text" placeholder="Search...">
+		<aside class="menu">
+			<ul class="menu-list">
+				{% for post in site.posts %}
+				<li>
+					<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</aside>
+	</div>
+	<div class="content">
+		{{ content }}
+	</div>
+</div>
+{% include footer.html %}
