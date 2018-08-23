@@ -9,7 +9,9 @@ const map = require('map-stream');
 const dir = {
   parent: `${__dirname}/../`,
   docSrc: `${__dirname}/../doc-src/`,
-  doc: `${__dirname}/../docs/_posts/`
+  doc: `${__dirname}/../docs/_posts/`,
+  sass: `${__dirname}/../docs/_sass/`,
+  nodeModules: `${__dirname}/../node_modules/`
 };
 const documentationPreprocessors = [
   {
@@ -30,7 +32,7 @@ let config;
 module.exports = gulpConfig => {
   config = gulpConfig;
 
-  return gulp.series(docClear, docPreprocess, docGenerate, docClean);
+  return gulp.series(docClear, docPreprocess, docGenerate, docAssets, docClean);
 };
 
 function docClear() {
@@ -84,6 +86,27 @@ function docGenerate(done) {
       })
     )
     .on('end', () => done());
+}
+
+function docAssets(done) {
+  const bulmaSassDir = `${dir.sass}sass`;
+
+  try {
+    del(bulmaSassDir)
+    fs.mkdirSync(bulmaSassDir);
+  } catch (error) {
+    null;
+  }
+
+  gulp
+    .src(`${dir.nodeModules}bulma/bulma.sass`)
+    .pipe(gulp.dest(dir.sass))
+    .on('end', () => {
+      gulp
+        .src(`${dir.nodeModules}bulma/sass/*/**`)
+        .pipe(gulp.dest(bulmaSassDir))
+        .on('end', () => done());
+    });
 }
 
 function docClean() {
