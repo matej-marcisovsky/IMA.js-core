@@ -1,17 +1,21 @@
-const del = require('del');
-const gulp = require('gulp');
 const change = require('gulp-change');
+const del = require('del');
+const fs = require('fs-extra');
+const gulp = require('gulp');
 const jsdoc2md = require('jsdoc-to-markdown');
-const rename = require('gulp-rename');
-const fs = require('fs');
 const map = require('map-stream');
+const packageData = require(`${__dirname}/../package.json`);
+const rename = require('gulp-rename');
+
+const DOC_SRC = 'doc-src';
 
 const dir = {
-  parent: `${__dirname}/../`,
-  docSrc: `${__dirname}/../doc-src/`,
-  doc: `${__dirname}/../docs/_posts/`,
-  sass: `${__dirname}/../docs/_sass/`,
-  nodeModules: `${__dirname}/../node_modules/`
+  doc: `${__dirname}/../docs/`,
+  docPosts: `${__dirname}/../docs/_posts/`,
+  docSass: `${__dirname}/../docs/_sass/`,
+  docSrc: `${__dirname}/../${DOC_SRC}/`,
+  nodeModules: `${__dirname}/../node_modules/`,
+  parent: `${__dirname}/../`
 };
 const documentationPreprocessors = [
   {
@@ -32,14 +36,15 @@ let config;
 module.exports = gulpConfig => {
   config = gulpConfig;
 
-  return gulp.series(docClear, docPreprocess, docGenerate, docAssets, docClean);
+  return gulp.series(clear, preprocess, generate, bulma, fontAwesome, clean);
 };
 
-function docClear() {
-  return del([dir.docSrc, dir.doc]);
+function clear() {
+  fs.emptyDirSync(dir.docPosts);
+  return del(dir.docSrc);
 }
 
-function docPreprocess() {
+function preprocess() {
   return gulp
     .src(config.files.js)
     .pipe(
@@ -61,9 +66,18 @@ function docPreprocess() {
     .pipe(gulp.dest(dir.docSrc));
 }
 
-function docGenerate(done) {
-  const filenamePrefix = new Date().toISOString().slice(0, 10);
-  fs.mkdirSync(dir.doc);
+function generate(done) {
+  const datePrefix = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const config = {
+    separators: true,
+    partial: [
+      `${__dirname}/../docs/_partials/main.hbs`,
+      `${__dirname}/../docs/_partials/header.hbs`
+    ]
+  };
+  const gitUrl = `${packageData.repository.url.slice(0, -4)}/tree/stable`;
+
+  fs.ensureDirSync(dir.docPosts);
 
   gulp
     .src([`${dir.docSrc}**/*.{js,jsx}`], {
@@ -71,16 +85,50 @@ function docGenerate(done) {
     })
     .pipe(
       map((file, callback) => {
-        const output = jsdoc2md.renderSync({
-          files: file.path,
-          separators: true
+        let templateData = jsdoc2md.getTemplateDataSync({ files: file.path });
+        let menuHandled = false;
+
+        templateData = templateData.map(item => {
+          {
+            if (item.meta) {
+              const { filename = '', lineno = 0, path = '' } = item.meta;
+
+              item.gitUrl = `${gitUrl}${path
+                .split(DOC_SRC)
+                .pop()}/${filename}#L${lineno}`;
+            }
+          }
+
+          {
+            if (!menuHandled && item.meta) {
+              const { filename = '', path = '' } = item.meta;
+              const category = path.split(`${DOC_SRC}/`);
+
+              if (category.length > 1) {
+                item.menuCategory = category.pop();
+              } else {
+                item.menuCategory = 'general';
+              }
+
+              item.menuName = filename.replace(/(\/|.jsx|.js)/g, '');
+
+              menuHandled = true;
+            }
+          }
+
+          return item;
         });
+
+        const output = jsdoc2md.renderSync(
+          Object.assign({}, config, { data: templateData })
+        );
+
         const filename = file.relative
           .replace(/(\/|.jsx|.js)/g, '')
           .replace(/([a-zA-Z])(?=[A-Z])/g, '$1-')
           .toLowerCase();
 
-        fs.writeFileSync(`${dir.doc}${filenamePrefix}-${filename}.md`, output);
+        fs.writeFileSync(`${dir.docPosts}${datePrefix}-${filename}.md`, output);
 
         callback(null, file);
       })
@@ -88,27 +136,36 @@ function docGenerate(done) {
     .on('end', () => done());
 }
 
-function docAssets(done) {
-  const bulmaSassDir = `${dir.sass}sass`;
+function bulma(done) {
+  const bulmaSassDir = `${dir.docSass}sass`;
 
-  try {
-    del(bulmaSassDir)
-    fs.mkdirSync(bulmaSassDir);
-  } catch (error) {
-    null;
-  }
+  fs.ensureDirSync(bulmaSassDir);
+  fs.emptyDirSync(bulmaSassDir);
 
-  gulp
-    .src(`${dir.nodeModules}bulma/bulma.sass`)
-    .pipe(gulp.dest(dir.sass))
-    .on('end', () => {
-      gulp
-        .src(`${dir.nodeModules}bulma/sass/*/**`)
-        .pipe(gulp.dest(bulmaSassDir))
-        .on('end', () => done());
-    });
+  fs.copySync(`${dir.nodeModules}bulma/bulma.sass`, `${dir.docSass}bulma.sass`);
+  fs.copySync(`${dir.nodeModules}bulma/sass`, bulmaSassDir);
+
+  done();
 }
 
-function docClean() {
+function fontAwesome(done) {
+  const fontsDir = `${dir.doc}webfonts`;
+
+  fs.ensureDirSync(fontsDir);
+  fs.emptyDirSync(fontsDir);
+
+  fs.copySync(
+    `${dir.nodeModules}@fortawesome/fontawesome-free/css/all.min.css`,
+    `${dir.doc}css/all.min.css`
+  );
+  fs.copySync(
+    `${dir.nodeModules}@fortawesome/fontawesome-free/webfonts`,
+    fontsDir
+  );
+
+  done();
+}
+
+function clean() {
   return del(dir.docSrc);
 }

@@ -1,4 +1,5 @@
-baseurl: /IMA.js-core
+baseurl: "/IMA.js-core"
+exclude: ["_partials"]
 defaults:
   -
     scope:

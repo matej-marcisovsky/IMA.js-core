@@ -1,13 +1,28 @@
 {% include header.html %}
 <div id="doc" class="is-flex">
 	<div>
-		<input class="input" type="text" placeholder="Search...">
+		<div class="field">
+			<p class="control has-icons-left">
+				<input class="input" type="text" placeholder="Search...">
+				<span class="icon is-small is-left">
+					<i class="fas fa-search"></i>
+				</span>
+			</p>
+		</div>
 		<aside class="menu">
-			<ul class="menu-list">
-				{% for post in site.posts %}
-				<li>
-					<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-				</li>
+				{% for category in site.categories %}
+				<p class="menu-label">{{ category | first }}</p>
+				<ul class="menu-list">
+					{% for posts in category %}
+						{% for post in posts %}
+							{% if post.url %}
+								<li>
+									<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+								</li>
+							{% endif %}
+						{% endfor %}
+					{% endfor %}
+				</ul>
 				{% endfor %}
 			</ul>
 		</aside>

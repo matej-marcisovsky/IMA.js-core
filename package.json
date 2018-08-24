@@ -45,6 +45,7 @@
     },
     "license": "MIT",
     "devDependencies": {
+        "@fortawesome/fontawesome-free": "^5.2.0",
         "babel-core": "^6.26.0",
         "babel-eslint": "^8.2.2",
         "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
@@ -58,6 +59,7 @@
         "eslint-plugin-jest": "^21.17.0",
         "eslint-plugin-prettier": "^2.6.0",
         "eslint-plugin-react": "^7.9.1",
+        "fs-extra": "^7.0.0",
         "gulp": "github:gulpjs/gulp#c120a94",
         "gulp-babel": "^7.0.1",
         "gulp-change": "^1.0.0",
