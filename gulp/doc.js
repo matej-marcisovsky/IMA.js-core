@@ -11,6 +11,7 @@ const DOC_SRC = 'doc-src';
 
 const dir = {
   doc: `${__dirname}/../docs/`,
+  docData: `${__dirname}/../docs/_data/`,
   docPartials: `${__dirname}/../docs/_partials/`,
   docPosts: `${__dirname}/../docs/_posts/`,
   docSass: `${__dirname}/../docs/_sass/`,
@@ -37,7 +38,15 @@ let config;
 module.exports = gulpConfig => {
   config = gulpConfig;
 
-  return gulp.series(clear, preprocess, generate, bulma, fontAwesome, clean);
+  return gulp.series(
+    clear,
+    preprocess,
+    generate,
+    bulma,
+    fontAwesome,
+    lunr,
+    clean
+  );
 };
 
 function clear() {
@@ -78,6 +87,7 @@ function generate(done) {
     ]
   };
   const gitUrl = `${packageData.repository.url.slice(0, -4)}/tree/stable`;
+  const lunrDocuments = [];
 
   fs.ensureDirSync(dir.docPosts);
 
@@ -87,9 +97,14 @@ function generate(done) {
     })
     .pipe(
       map((file, callback) => {
-        let templateData = jsdoc2md.getTemplateDataSync({ files: file.path });
+        let urlPrefix = '';
         let menuHandled = false;
+        let templateData = jsdoc2md.getTemplateDataSync({ files: file.path });
         let textHandled = false;
+        const filename = file.relative
+          .replace(/(\/|.jsx|.js)/g, '')
+          .replace(/([a-zA-Z])(?=[A-Z])/g, '$1-')
+          .toLowerCase();
 
         templateData = templateData.map(item => {
           if (item.meta) {
@@ -108,6 +123,7 @@ function generate(done) {
                 item.imaMenuCategory = 'general';
               }
 
+              urlPrefix = item.imaMenuCategory;
               item.imaMenuName = filename.replace(/(\/|.jsx|.js)/g, '');
 
               menuHandled = true;
@@ -133,6 +149,17 @@ function generate(done) {
             }
           }
 
+          const name = item.id.replace('#', '.');
+          const hash =
+            item.kind === 'constructor'
+              ? `new_${item.name}_new`
+              : item.id.replace('#', '+');
+          lunrDocuments.push({
+            name,
+            text: [item.memberof, item.name, name].filter(value => !!value),
+            url: `${urlPrefix}/${filename}.html#${hash}`
+          });
+
           return item;
         });
 
@@ -140,17 +167,20 @@ function generate(done) {
           Object.assign({}, config, { data: templateData })
         );
 
-        const filename = file.relative
-          .replace(/(\/|.jsx|.js)/g, '')
-          .replace(/([a-zA-Z])(?=[A-Z])/g, '$1-')
-          .toLowerCase();
-
         fs.writeFileSync(`${dir.docPosts}${datePrefix}-${filename}.md`, output);
 
         callback(null, file);
       })
     )
-    .on('end', () => done());
+    .on('end', () => {
+      fs.ensureDirSync(dir.docData);
+      fs.emptyDirSync(dir.docData);
+      fs.writeFileSync(
+        `${dir.docData}lunr.json`,
+        JSON.stringify(lunrDocuments)
+      );
+      done();
+    });
 }
 
 function bulma(done) {
@@ -179,6 +209,17 @@ function fontAwesome(done) {
     `${dir.nodeModules}@fortawesome/fontawesome-free/webfonts`,
     fontsDir
   );
+
+  done();
+}
+
+function lunr(done) {
+  const jsDir = `${dir.doc}js`;
+
+  fs.ensureDirSync(jsDir);
+  fs.unlinkSync(`${jsDir}/lunr.js`);
+
+  fs.copySync(`${dir.nodeModules}lunr/lunr.js`, `${jsDir}/lunr.js`);
 
   done();
 }
