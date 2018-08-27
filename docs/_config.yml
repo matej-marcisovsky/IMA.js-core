@@ -1,5 +1,6 @@
 baseurl: "/IMA.js-core"
 exclude: ["_partials"]
+permalink: /doc/:categories/:title:output_ext
 defaults:
   -
     scope:

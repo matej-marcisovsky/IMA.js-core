@@ -13,14 +13,13 @@
 				{% for category in site.categories %}
 				<p class="menu-label">{{ category | first }}</p>
 				<ul class="menu-list">
-					{% for posts in category %}
-						{% for post in posts %}
-							{% if post.url %}
-								<li>
-									<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-								</li>
-							{% endif %}
-						{% endfor %}
+					{% assign sorted_posts = category[1] | sort: 'title' %}
+					{% for post in sorted_posts %}
+						{% if post.url %}
+							<li>
+								<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+							</li>
+						{% endif %}
 					{% endfor %}
 				</ul>
 				{% endfor %}

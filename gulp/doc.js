@@ -11,6 +11,7 @@ const DOC_SRC = 'doc-src';
 
 const dir = {
   doc: `${__dirname}/../docs/`,
+  docPartials: `${__dirname}/../docs/_partials/`,
   docPosts: `${__dirname}/../docs/_posts/`,
   docSass: `${__dirname}/../docs/_sass/`,
   docSrc: `${__dirname}/../${DOC_SRC}/`,
@@ -71,8 +72,9 @@ function generate(done) {
   const config = {
     separators: true,
     partial: [
-      `${__dirname}/../docs/_partials/main.hbs`,
-      `${__dirname}/../docs/_partials/header.hbs`
+      `${dir.docPartials}docs.hbs`,
+      `${dir.docPartials}header.hbs`,
+      `${dir.docPartials}main.hbs`
     ]
   };
   const gitUrl = `${packageData.repository.url.slice(0, -4)}/tree/stable`;
@@ -87,32 +89,47 @@ function generate(done) {
       map((file, callback) => {
         let templateData = jsdoc2md.getTemplateDataSync({ files: file.path });
         let menuHandled = false;
+        let textHandled = false;
 
         templateData = templateData.map(item => {
-          {
-            if (item.meta) {
-              const { filename = '', lineno = 0, path = '' } = item.meta;
+          if (item.meta) {
+            const { filename = '', lineno = 0, path = '' } = item.meta;
 
-              item.gitUrl = `${gitUrl}${path
-                .split(DOC_SRC)
-                .pop()}/${filename}#L${lineno}`;
-            }
-          }
+            item.imaGitUrl = `${gitUrl}${path
+              .split(DOC_SRC)
+              .pop()}/${filename}#L${lineno}`;
 
-          {
-            if (!menuHandled && item.meta) {
-              const { filename = '', path = '' } = item.meta;
+            if (!menuHandled) {
               const category = path.split(`${DOC_SRC}/`);
 
               if (category.length > 1) {
-                item.menuCategory = category.pop();
+                item.imaMenuCategory = category.pop();
               } else {
-                item.menuCategory = 'general';
+                item.imaMenuCategory = 'general';
               }
 
-              item.menuName = filename.replace(/(\/|.jsx|.js)/g, '');
+              item.imaMenuName = filename.replace(/(\/|.jsx|.js)/g, '');
 
               menuHandled = true;
+            }
+
+            if (!textHandled) {
+              let subDir = path.split(`${DOC_SRC}/`);
+              if (subDir.length > 1) {
+                subDir = `${subDir.pop()}/`;
+              } else {
+                subDir = '';
+              }
+
+              const textPath = `${
+                dir.parent
+              }${subDir}__docs__/${filename.replace(/(\/|.jsx|.js)/g, '.md')}`;
+
+              if (fs.pathExistsSync(textPath)) {
+                item.imaText = fs.readFileSync(textPath, 'utf8');
+
+                textHandled = true;
+              }
             }
           }
 

@@ -8,6 +8,7 @@
 	&>div:first-child {
 		border-right: 1px solid $grey-lighter;
 		flex-shrink: 0;
+		margin-bottom: 1.5rem;
 		margin-right: 1rem;
 		padding-right: 0.5rem;
 	}
@@ -15,4 +16,33 @@
 
 #root {
 	margin: 1.5rem;
+}
+
+.card {
+	margin-right: 1rem;
+
+	.card-content>p {
+		margin-bottom: 1rem;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+.column {
+	flex-direction: column;
+}
+
+.icon-margin {
+	margin-right: 1rem;
+}
+
+.img {
+	width: 50%;
+	margin: 1.5rem 25%;
 }

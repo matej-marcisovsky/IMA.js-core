@@ -4,16 +4,16 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{{ site.github.repository_name }}</title>
-		<link rel="stylesheet" href="{{ '/css/all.min.css' | relative_url }}">
+		<link rel="stylesheet" href="{{ '/css/all.min.css'| append: site.github.build_revision | relative_url }}">
 		<link rel="stylesheet" href="{{ '/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
 	</head>
 	<body>
 		<div id="root">
 			<nav class="level">
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a href="{{ site.baseurl }}/" class="has-text-primary">Home</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="{{ site.baseurl }}/examples"
 						title="Check out our demos and learn by example."
@@ -21,7 +21,7 @@
 						Examples
 					</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="https://github.com/seznam/IMA.js-skeleton/blob/master/README.md"
 						title="Seen enough already? Click here to get started."
@@ -30,7 +30,7 @@
 						Quick Start
 					</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="https://github.com/seznam/IMA.js-skeleton/wiki/Tutorial,-part-1"
 						title="Start by learning the basics and master the art of building an IMA.js web application."
@@ -39,7 +39,7 @@
 						Tutorial
 					</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="{{ site.baseurl }}/doc"
 						title="Browse through the documentation for details on code usage."
@@ -47,7 +47,7 @@
 						Documentation
 					</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="https://github.com/seznam/IMA.js-skeleton/archive/master.zip"
 						title="Get the latest release as a ZIP archive."
@@ -56,7 +56,7 @@
 						Download
 					</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="http://stackoverflow.com/questions/tagged/ima.js"
 						title="Stackoverflow questions on using IMA.js."
@@ -65,7 +65,7 @@
 						Usage Questions
 					</a>
 				</p>
-				<p class="level-item has-text-centered">
+				<p class="level-item is-narrow has-text-centered">
 					<a
 						href="{{ site.baseurl }}/contact"
 						class="has-text-primary">
