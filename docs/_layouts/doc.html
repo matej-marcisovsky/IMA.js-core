@@ -18,11 +18,7 @@
 				</div>
 				<div class="level-right">
 					<div class="level-item">
-						<button id="results-close" class="button is-danger is-small">
-							<span class="icon is-small">
-								<i class="fas fa-times fa-lg"></i>
-							</span>
-						</button>
+						<button id="results-close" class="delete"></button>
 					</div>
 				</div>
 			</div>
@@ -36,7 +32,7 @@
 					{% for post in sorted_posts %}
 						{% if post.url %}
 							<li>
-								<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+								<a href="{{ post.url | relative_url }}"{% if post.url == page.url %}class="is-active"{% endif %}>{{ post.title }}</a>
 							</li>
 						{% endif %}
 					{% endfor %}

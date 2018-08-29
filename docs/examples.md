@@ -9,7 +9,7 @@
     </div>
     <div class="card-image">
       <figure class="image is-5by3">
-        <img src="{{ '/img/example-hello.png?v='| append: site.github.build_revision | relative_url }}" alt="Hello World Screenshot">
+        <img src="{{ '/img/examples/hello.png?v='| append: site.github.build_revision | relative_url }}" alt="Hello World Screenshot">
       </figure>
     </div>
     <div class="card-content">
@@ -29,7 +29,7 @@
     </div>
     <div class="card-image">
       <figure class="image is-5by3">
-        <img src="{{ '/img/example-todo.png?v='| append: site.github.build_revision | relative_url }}" alt="TODO List Screenshot">
+        <img src="{{ '/img/examples/todo.png?v='| append: site.github.build_revision | relative_url }}" alt="TODO List Screenshot">
       </figure>
     </div>
     <div class="card-content">
@@ -50,7 +50,7 @@
     </div>
     <div class="card-image">
       <figure class="image is-5by3">
-        <img src="{{ '/img/example-feed.png?v='| append: site.github.build_revision | relative_url }}" alt="Twitter-Like Feed Screenshot">
+        <img src="{{ '/img/examples/feed.png?v='| append: site.github.build_revision | relative_url }}" alt="Twitter-Like Feed Screenshot">
       </figure>
     </div>
     <div class="card-content">

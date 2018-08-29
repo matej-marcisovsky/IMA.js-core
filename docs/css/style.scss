@@ -36,6 +36,14 @@
 
 .column {
 	flex-direction: column;
+
+	.card {
+		margin: 0;
+	}
+}
+
+.footer {
+	margin-top: 3rem;
 }
 
 .hidden {
@@ -49,4 +57,23 @@
 .img {
 	width: 50%;
 	margin: 1.5rem 25%;
+}
+
+.separator {
+	margin-top: 6rem;
+
+	&::before {
+		background-color: $grey-lighter;
+		content: '';
+		height: 1px;
+		left: 0;
+		position: absolute;
+		width: 100%;
+	}
+}
+
+.table {
+	td {
+		vertical-align: middle;
+	}
 }
