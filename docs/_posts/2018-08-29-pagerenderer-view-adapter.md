@@ -15,6 +15,7 @@ page view component through its properties.
         * [.state](#ViewAdapter+state) : <code>Object.&lt;string, \*&gt;</code>
         * [._view](#ViewAdapter+_view) : <code>function</code>
         * [.componentWillReceiveProps()](#ViewAdapter+componentWillReceiveProps)
+        * [.componentDidCatch()](#ViewAdapter+componentDidCatch)
         * [.render()](#ViewAdapter+render)
         * [.getChildContext()](#ViewAdapter+getChildContext)
     * _static_
@@ -53,12 +54,21 @@ The actual page view to render.
 
 * * *
 
-### viewAdapter.render()&nbsp;<a name="ViewAdapter+render" href="https://github.com/seznam/IMA.js-core/tree/stable/page/renderer/ViewAdapter.js#L56" target="_blank"><span class="icon"><i class="fas fa-external-link-alt fa-xs"></i></span></a>
+### viewAdapter.componentDidCatch()&nbsp;<a name="ViewAdapter+componentDidCatch" href="https://github.com/seznam/IMA.js-core/tree/stable/page/renderer/ViewAdapter.js#L60" target="_blank"><span class="icon"><i class="fas fa-external-link-alt fa-xs"></i></span></a>
+Fixes an issue where when there's an error in React component,
+the defined ErrorPage may not get re-rendered and white
+blank page appears instead.
+
 **Kind**: instance method of [<code>ViewAdapter</code>](#ViewAdapter)  
 
 * * *
 
-### viewAdapter.getChildContext()&nbsp;<a name="ViewAdapter+getChildContext" href="https://github.com/seznam/IMA.js-core/tree/stable/page/renderer/ViewAdapter.js#L63" target="_blank"><span class="icon"><i class="fas fa-external-link-alt fa-xs"></i></span></a>
+### viewAdapter.render()&nbsp;<a name="ViewAdapter+render" href="https://github.com/seznam/IMA.js-core/tree/stable/page/renderer/ViewAdapter.js#L65" target="_blank"><span class="icon"><i class="fas fa-external-link-alt fa-xs"></i></span></a>
+**Kind**: instance method of [<code>ViewAdapter</code>](#ViewAdapter)  
+
+* * *
+
+### viewAdapter.getChildContext()&nbsp;<a name="ViewAdapter+getChildContext" href="https://github.com/seznam/IMA.js-core/tree/stable/page/renderer/ViewAdapter.js#L72" target="_blank"><span class="icon"><i class="fas fa-external-link-alt fa-xs"></i></span></a>
 **Kind**: instance method of [<code>ViewAdapter</code>](#ViewAdapter)  
 
 * * *
